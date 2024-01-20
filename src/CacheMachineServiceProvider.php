@@ -4,7 +4,6 @@ namespace JoshEmbling\CacheMachine;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use JoshEmbling\CacheMachine\Commands\CacheMachineCommand;
 
 class CacheMachineServiceProvider extends PackageServiceProvider
 {
@@ -17,9 +16,6 @@ class CacheMachineServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('cache-machine')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_cache-machine_table')
-            ->hasCommand(CacheMachineCommand::class);
+            ->hasConfigFile();
     }
 }
