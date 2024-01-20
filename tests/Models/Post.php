@@ -10,9 +10,9 @@ class Post extends Model
 {
     use CacheMachine, HasFactory;
 
-    public static string $all = 'posts';
+    public static string $all = 'all_posts';
 
-    //public static string $select = 'select_posts';
+    public static string $select = 'select_posts';
 
     protected $fillable = [
         'title',
@@ -29,14 +29,17 @@ class Post extends Model
     {
         parent::boot();
 
-        Post::cacheMachine(static::cacheKeys(), false);
+        self::deposit(self::cacheKeys());
     }
 
+    /**
+     * @var array<string, callable>
+     */
     public static function cacheKeys(): array
     {
         $keys = [
             Post::$all => fn () => Post::get(),
-            //Post::$select => fn () => Post::get()->mapWithKeys(fn ($type) => [$type->id => $type->title]),
+            Post::$select => fn () => Post::get()->mapWithKeys(fn ($type) => [$type->id => $type->title]),
         ];
 
         return $keys;

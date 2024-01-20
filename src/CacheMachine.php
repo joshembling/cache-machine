@@ -18,7 +18,7 @@ trait CacheMachine
      *
      * @param  array  $items  An associative array where keys represent cache keys and values are callbacks for cache generation.
      */
-    public static function cacheMachine(array $items): void
+    public static function deposit(array $items): void
     {
         foreach ($items as $key => $callback) {
             static::generateCache($key, $callback);
@@ -44,8 +44,13 @@ trait CacheMachine
      */
     public static function forceFetch(string $key): mixed
     {
-        if (array_key_exists($key, static::cacheKeys())) {
-            return static::forceSave($key, static::cacheKeys()[$key]);
+        if (
+            array_key_exists($key, static::cacheKeys()) &&
+            is_callable(static::cacheKeys()[$key])
+        ) {
+            Cache::rememberForever($key, static::cacheKeys()[$key]);
+
+            return static::cacheKeys()[$key]();
         }
     }
 
@@ -92,24 +97,5 @@ trait CacheMachine
         static::deleted(function () use ($key, $callback) {
             Cache::rememberForever($key, $callback);
         });
-    }
-
-    /**
-     * Force save an item to the cache if not already present.
-     *
-     * @param  string  $key  The key to identify the cached item.
-     * @param  callable  $callback  The callback function to generate the cache item.
-     * @return mixed The result of the force save operation.
-     */
-    private static function forceSave(string $key, callable $callback): mixed
-    {
-        if (
-            is_null(Cache::get($key)) &&
-            is_callable($callback)
-        ) {
-            Cache::rememberForever($key, $callback);
-
-            return static::cacheKeys()[$key]();
-        }
     }
 }
