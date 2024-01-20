@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace JoshEmbling\CacheMachine\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class CacheMachineCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'cache-machine';
 
     public $description = 'My command';
 
