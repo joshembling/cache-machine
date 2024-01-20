@@ -9,17 +9,19 @@ This is where your description should go. Limit it to a paragraph or two. Consid
 
 ## About
 
-`CacheMachine` is a simple, lightweight and efficient way of managing cache for your Laravel models. You 'withdraw' your cache with a key (instead of running a query), and at the same time, make 'deposits' (save cache if it doesn't already exist).
+`CacheMachine` is a simple, lightweight and efficient way of managing cache for your Laravel models. Instead of executing queries, you can 'withdraw' cached data using specific keys and simultaneously 'deposit' (save) new cache entries when needed.
 
-CacheMachine is triggered whenever the save or delete actions initiate on your models, meaning your cache will automatically update when something has changed. If you want more control, you are not limited to this functionality - you may also force cache updates whenever you want.
+One of the key advantages of CacheMachine is its automatic triggering mechanism during model save or delete actions. This ensures that your cache is always up-to-date without requiring manual intervention. For those who prefer more control, you have the flexibility to force cache updates at your discretion.
 
-The main benefit of CacheMachine means you don't have to worry about out-of-date cache. It will exist (forever) until your model updates.
+The main benefit of CacheMachine means you don't have to worry about out-of-date cache. Once created, the cache persists indefinitely until your model undergoes an update.
 
-CacheMachine can be a great use case for articles and blog posts, products and pricing data, select fields, translations, user profiles, images etc. 
+CacheMachine is particularly well-suited for various use cases, including articles and blog posts, product and pricing information, select fields, translations, user profiles, images etc.
 
-Although this package is based around caching your model queries, you are not limited to this. You may pass any data you want to your cache keys, and they will still update when your model updates.
+While CacheMachine is designed around caching model queries, it offers versatility. You can incorporate any data you desire into your cache keys, ensuring they stay current with your model updates.
 
-**Note**: Be mindful - if you have models that update constantly e.g. every few seconds, you should likely configure your own caching methods tailored to the way you want them to perform.
+**Note**: Be mindful - if your models undergo frequent updates, such as every few seconds, it's advisable to configure your caching methods according to your specific performance requirements. This is outside the scope of this package.
+
+You are free to use any caching provider you want e.g. Redis, DynamoDB. Refer to [Laravel's documentation on caching](https://laravel.com/docs/10.x/cache#configuration) for further assistance.
 
 ## Installation
 
@@ -75,7 +77,7 @@ class Post extends Model
 }
 ```
 
-3) Add the `cacheKeys()` method to your model. This method must return an array with an array structure of `string => callable`.
+3) Add the `cacheKeys()` method to your model. This must return an array with a structure of `string => callable`.
 
 ```php
 class Post extends Model
@@ -143,9 +145,9 @@ class Post extends Model
 }
 ```
 
-Once you have set up your model, you are able to `withdraw()` your cache. If it doesn't exist, CacheMachine will automatically `deposit` your cache for you if your callback function is valid. 
+Once you have set up your model, you are able to `withdraw()` your cache. If it doesn't exist, CacheMachine will automatically `deposit` your cache for you when your callback function is valid. 
 
-In other words, CacheMachine will fetch from the cache where it exists, or query the database if it doesn't, whilst caching it ready for the next use.
+In other words, CacheMachine will fetch from the cache when it exists, or query the database if it doesn't.
 
 ```php
 // You may pass a string to the withdraw method.
@@ -155,7 +157,7 @@ Post::withdraw('all_posts');
 Post::withdraw(Post::$all);
 ```
 
-If you would like to force saving to the cache e.g. you have manually added records to your database without triggering model observers, you may execute the following:
+If you would like to manually save to the cache e.g. you have manually added records to your database without triggering model observers, you may execute the following:
 ```php
 Post::forceFetch(Post::$all)
 ```
