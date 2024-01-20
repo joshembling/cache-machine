@@ -5,8 +5,6 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/joshembling/cache-machine/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/joshembling/cache-machine/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/joshembling/cache-machine.svg?style=flat-square)](https://packagist.org/packages/joshembling/cache-machine)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
-
 ## About
 
 `CacheMachine` is a simple, lightweight and efficient way of managing cache for your Laravel models. Instead of executing queries, you can 'withdraw' cached data using specific keys and simultaneously 'deposit' (save) new cache entries when needed.
@@ -134,8 +132,12 @@ class Post extends Model
              // Cache all posts
             self::$all => fn () => self::get(),
 
-             // Cache all posts in a key => value style, like you may see on a select dropdown
-            self::$select => fn () => self::get()->mapWithKeys(fn ($type) => [$type->id => $type->title]),
+             // Cache all posts in a key => value format
+            self::$select => fn () => self::get()->mapWithKeys(
+                fn ($type) => [
+                    $type->id => $type->title,
+                ]
+            ),
         ];
 
         return $keys;
