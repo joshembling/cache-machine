@@ -38,6 +38,8 @@ To use CacheMachine, the same structure will apply to each of your models.
 1) Add the `CacheMachine` trait.
 
 ```php
+use JoshEmbling\CacheMachine\CacheMachine;
+
 class Post extends Model
 {
     use CacheMachine;
@@ -49,6 +51,8 @@ class Post extends Model
 2) Add the `boot()` method to your model. Within this method, add the `deposit` static method with an argument of `cacheKeys()`.
 
 ```php
+use JoshEmbling\CacheMachine\CacheMachine;
+
 class Post extends Model
 {
     use CacheMachine;
@@ -67,6 +71,8 @@ class Post extends Model
 3) Add the `cacheKeys()` method to your model. This must return an array with a structure of `string => callable`.
 
 ```php
+use JoshEmbling\CacheMachine\CacheMachine;
+
 class Post extends Model
 {
     use CacheMachine;
@@ -98,6 +104,8 @@ class Post extends Model
 4) You may prefer to dynamically refer to your keys as properties within this class.
 
 ```php
+use JoshEmbling\CacheMachine\CacheMachine;
+
 class Post extends Model
 {
     use CacheMachine;
