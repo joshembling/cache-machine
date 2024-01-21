@@ -1,6 +1,6 @@
 {
     "name": "joshembling/cache-machine",
-    "description": "This is my package cache-machine",
+    "description": "CacheMachine allows you to easily 'withdraw' and 'deposit' cache in your Laravel projects.",
     "keywords": [
         "Josh Embling",
         "laravel",
