@@ -4,7 +4,11 @@
     "keywords": [
         "Josh Embling",
         "laravel",
-        "cache-machine"
+        "cache-machine",
+        "cache",
+        "caching",
+        "php",
+        "laravel cache"
     ],
     "homepage": "https://github.com/joshembling/cache-machine",
     "license": "MIT",

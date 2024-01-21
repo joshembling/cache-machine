@@ -21,7 +21,7 @@ While CacheMachine is designed around caching model queries, it offers versatili
 
 You are free to use any caching provider you want e.g. Redis, DynamoDB. Refer to [Laravel's documentation on caching](https://laravel.com/docs/10.x/cache#configuration) for further assistance.
 
-This package is compatible with Laravel versions 6, 7, 8, 9 and 10 and PHP versions >= 7.4.
+This package is compatible with Laravel versions >= 10 and PHP versions >= 8.1.
 
 ## Installation
 
