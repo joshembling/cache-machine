@@ -4,6 +4,7 @@ namespace JoshEmbling\CacheMachine\Tests\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use JoshEmbling\CacheMachine\CacheMachine;
 
 class Post extends Model
@@ -38,10 +39,15 @@ class Post extends Model
     public static function cacheKeys(): array
     {
         $keys = [
-            Post::$all => fn () => Post::get(),
-            Post::$select => fn () => Post::get()->mapWithKeys(fn ($type) => [$type->id => $type->title]),
+            self::$all => fn () => self::get(),
+            self::$select => fn () => self::get()->mapWithKeys(fn ($type) => [$type->id => $type->title]),
         ];
 
         return $keys;
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 }

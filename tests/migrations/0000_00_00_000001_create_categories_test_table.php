@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePostsTestTable extends Migration
+class CreateCategoriesTestTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreatePostsTestTable extends Migration
      */
     public function up()
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('category_id')->nullable();
-            $table->string('title', 255);
-            $table->longText('content');
-            $table->dateTime('published_at')->nullable();
+            $table->string('name', 255);
             $table->timestamps();
         });
     }
@@ -30,6 +27,6 @@ class CreatePostsTestTable extends Migration
      */
     public function down()
     {
-        Schema::drop('posts');
+        Schema::drop('categories');
     }
 }

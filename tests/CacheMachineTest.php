@@ -2,15 +2,12 @@
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use JoshEmbling\CacheMachine\Tests\Models\Category;
 use JoshEmbling\CacheMachine\Tests\Models\Post;
 use Mockery;
 
 it('can create posts', function () {
-    Post::create([
-        'title' => fake()->sentence(4),
-        'content' => fake()->paragraphs(3, true),
-        'published_at' => fake()->dateTime(),
-    ]);
+    createPost();
 
     expect(Post::count())->toBe(1);
 });
@@ -32,8 +29,9 @@ test('cache is updated when model is created', function () {
 
             expect($result[0])->toEqual([
                 'id' => 1,
-                'title' => 'My title',
-                'content' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit! Eveniet modi beatae accusantium maxime sequi vitae doloribus, quidem distinctio ea animi!',
+                'category_id' => null,
+                'title' => 'Title',
+                'content' => 'This is the content',
                 'published_at' => '2024-01-01T00:00:00.000000Z',
                 'created_at' => '2024-01-01T00:00:00.000000Z',
                 'updated_at' => '2024-01-01T00:00:00.000000Z',
@@ -42,19 +40,11 @@ test('cache is updated when model is created', function () {
             return true;
         }));
 
-    Post::create([
-        'title' => 'My title',
-        'content' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit! Eveniet modi beatae accusantium maxime sequi vitae doloribus, quidem distinctio ea animi!',
-        'published_at' => now(),
-    ]);
+    createPost();
 });
 
 test('cache is updated when model is updated', function () {
-    Post::create([
-        'title' => 'My title',
-        'content' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit! Eveniet modi beatae accusantium maxime sequi vitae doloribus, quidem distinctio ea animi!',
-        'published_at' => now(),
-    ]);
+    createPost();
 
     Cache::shouldReceive('forget')
         ->once()
@@ -72,7 +62,8 @@ test('cache is updated when model is updated', function () {
 
             expect($result[0])->toEqual([
                 'id' => 1,
-                'title' => 'My title',
+                'category_id' => null,
+                'title' => 'Title',
                 'content' => 'Updated',
                 'published_at' => '2024-01-01T00:00:00.000000Z',
                 'created_at' => '2024-01-01T00:00:00.000000Z',
@@ -88,17 +79,17 @@ test('cache is updated when model is updated', function () {
 });
 
 test('cache is updated when model is deleted', function () {
-    Post::create([
+    createPost([
         'title' => 'My title 1',
         'content' => 'Content 1',
         'published_at' => now(),
     ]);
-    Post::create([
+    createPost([
         'title' => 'My title 2',
         'content' => 'Content 2',
         'published_at' => now(),
     ]);
-    Post::create([
+    createPost([
         'title' => 'My title 3',
         'content' => 'Content 3',
         'published_at' => now(),
@@ -123,6 +114,7 @@ test('cache is updated when model is deleted', function () {
             expect($result)->toEqual([
                 [
                     'id' => 2,
+                    'category_id' => null,
                     'title' => 'My title 2',
                     'content' => 'Content 2',
                     'published_at' => '2024-01-01T00:00:00.000000Z',
@@ -131,6 +123,7 @@ test('cache is updated when model is deleted', function () {
                 ],
                 [
                     'id' => 3,
+                    'category_id' => null,
                     'title' => 'My title 3',
                     'content' => 'Content 3',
                     'published_at' => '2024-01-01T00:00:00.000000Z',
@@ -160,6 +153,7 @@ test('cache is updated when forced and not via a model change observer', functio
 
             expect($result[0])->toEqual([
                 'id' => 1,
+                'category_id' => null,
                 'title' => 'My title',
                 'content' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit! Eveniet modi beatae accusantium maxime sequi vitae doloribus, quidem distinctio ea animi!',
                 'published_at' => '2024-01-01T00:00:00.000000Z',
@@ -187,11 +181,7 @@ test('cache is updated when forced and not via a model change observer', functio
 test('the cache withdraw method always returns a result and saves cache', function () {
     expect(Post::count())->toBe(0);
 
-    Post::create([
-        'title' => 'Title',
-        'content' => 'Content',
-        'published_at' => now(),
-    ]);
+    createPost();
 
     expect(Post::count())->toBe(1);
 
@@ -211,8 +201,9 @@ test('the cache withdraw method always returns a result and saves cache', functi
 
             expect($result[0])->toEqual([
                 'id' => 1,
+                'category_id' => null,
                 'title' => 'Title',
-                'content' => 'Content',
+                'content' => 'This is the content',
                 'published_at' => '2024-01-01T00:00:00.000000Z',
                 'created_at' => '2024-01-01T00:00:00.000000Z',
                 'updated_at' => '2024-01-01T00:00:00.000000Z',
@@ -223,3 +214,45 @@ test('the cache withdraw method always returns a result and saves cache', functi
 
     Post::withdraw(Post::$all);
 });
+
+it('can save cache with an eloquent relationship', function () {
+    Cache::shouldReceive('rememberForever')
+        ->once()
+        ->with(Post::$all, Mockery::on(function ($closure) {
+
+            if (! ($closure instanceof Closure)) {
+                return false;
+            }
+
+            $result = $closure()->toArray();
+
+            expect($result[0])->toEqual([
+                'id' => 1,
+                'category_id' => null,
+                'title' => 'Title',
+                'content' => 'This is the content',
+                'published_at' => '2024-01-01T00:00:00.000000Z',
+                'created_at' => '2024-01-01T00:00:00.000000Z',
+                'updated_at' => '2024-01-01T00:00:00.000000Z',
+            ]);
+
+            return true;
+        }));
+
+    createPost([
+        'category_id' => Category::create(['name' => 'Category'])->id,
+        'title' => 'Title',
+        'content' => 'This is the content',
+        'published_at' => now(),
+    ]);
+});
+
+function createPost(?array $attributes = null): void
+{
+    Post::create([
+        'category_id' => $attributes['category_id'] ?? null,
+        'title' => $attributes['title'] ?? 'Title',
+        'content' => $attributes['content'] ?? 'This is the content',
+        'published_at' => $attributes['published_at'] ?? now(),
+    ]);
+}
