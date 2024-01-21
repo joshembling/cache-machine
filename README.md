@@ -31,19 +31,6 @@ You can install the package via composer:
 composer require joshembling/cache-machine
 ```
 
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="cache-machine-config"
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
-
 ## Usage
 
 To use CacheMachine, the same structure will apply to each of your models.
