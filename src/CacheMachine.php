@@ -6,7 +6,10 @@ use Illuminate\Support\Facades\Cache;
 
 trait CacheMachine
 {
-    abstract protected static function boot();
+    public static function bootCacheMachine()
+    {
+        static::deposit(static::cacheKeys(), true);
+    }
 
     /**
      * @var array<string, callable> $keys
