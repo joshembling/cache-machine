@@ -12,6 +12,7 @@ class Post extends Model
     use CacheMachine, HasFactory;
 
     const ALL = 'all_posts';
+
     const SELECT = 'select_posts';
 
     protected $fillable = [
