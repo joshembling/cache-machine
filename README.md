@@ -48,7 +48,7 @@ class Post extends Model
 }
 ```
 
-2) Add the `boot()` method to your model. Within this method, add the `deposit` static method with an argument of `cacheKeys()`.
+2) Add the `cacheKeys()` method to your model. This must return an array with a structure of `string => callable`.
 
 ```php
 use JoshEmbling\CacheMachine\CacheMachine;
@@ -56,33 +56,6 @@ use JoshEmbling\CacheMachine\CacheMachine;
 class Post extends Model
 {
     use CacheMachine;
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        self::deposit(self::cacheKeys()); 
-    }
-    
-    // ...
-}
-```
-
-3) Add the `cacheKeys()` method to your model. This must return an array with a structure of `string => callable`.
-
-```php
-use JoshEmbling\CacheMachine\CacheMachine;
-
-class Post extends Model
-{
-    use CacheMachine;
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        self::deposit(self::cacheKeys()); 
-    }
 
     /**
      * @var array<string, callable>
@@ -90,7 +63,7 @@ class Post extends Model
     public static function cacheKeys(): array
     {
         $keys = [
-            // Cache all posts
+            // Cache all posts with the eloquent query as the callback
             'all_posts' => fn () => self::all(),
         ];
 
@@ -101,7 +74,7 @@ class Post extends Model
 }
 ```
 
-4) You may prefer to dynamically refer to your keys as properties within this class.
+3) You may prefer to dynamically refer to your keys as constants or properties within this class.
 
 ```php
 use JoshEmbling\CacheMachine\CacheMachine;
@@ -110,15 +83,8 @@ class Post extends Model
 {
     use CacheMachine;
 
-    public static string $all = 'all_posts';
-    public static string $select = 'select_posts';
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        self::deposit(self::cacheKeys()); 
-    }
+    const ALL = 'all_posts';
+    const SELECT = 'select_posts';
 
     /**
      * @var array<string, callable>
@@ -127,10 +93,10 @@ class Post extends Model
     {
         $keys = [
              // Cache all posts
-            self::$all => fn () => self::get(),
+            self::ALL => fn () => self::all(),
 
              // Cache all posts in a key => value format
-            self::$select => fn () => self::get()->mapWithKeys(
+            self::SELECT => fn () => self::get()->mapWithKeys(
                 fn ($type) => [
                     $type->id => $type->title,
                 ]
@@ -153,12 +119,12 @@ In other words, CacheMachine will fetch from the cache when it exists, or query 
 Post::withdraw('all_posts');
 
 // Or one of your model's static properties, relating to a key defined in the `cacheKeys()` method.
-Post::withdraw(Post::$all);
+Post::withdraw(Post::ALL);
 ```
 
 If you would like to manually save to the cache e.g. you have manually added records to your database without triggering model observers, you may execute the following:
 ```php
-Post::forceFetch(Post::$all)
+Post::forceFetch(Post::ALL)
 ```
 
 ## Collections 

@@ -11,9 +11,8 @@ class Post extends Model
 {
     use CacheMachine, HasFactory;
 
-    public static string $all = 'all_posts';
-
-    public static string $select = 'select_posts';
+    const ALL = 'all_posts';
+    const SELECT = 'select_posts';
 
     protected $fillable = [
         'title',
@@ -26,21 +25,14 @@ class Post extends Model
         'published_at' => 'datetime',
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        self::deposit(self::cacheKeys());
-    }
-
     /**
      * @var array<string, callable>
      */
     public static function cacheKeys(): array
     {
         $keys = [
-            self::$all => fn () => self::get(),
-            self::$select => fn () => self::get()->mapWithKeys(fn ($type) => [$type->id => $type->title]),
+            self::ALL => fn () => self::get(),
+            self::SELECT => fn () => self::get()->mapWithKeys(fn ($type) => [$type->id => $type->title]),
         ];
 
         return $keys;

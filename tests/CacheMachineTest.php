@@ -15,12 +15,12 @@ it('can create posts', function () {
 test('cache is updated when model is created', function () {
     Cache::shouldReceive('forget')
         ->once()
-        ->with(Post::$all)
+        ->with(Post::ALL)
         ->andReturn(null);
 
     Cache::shouldReceive('rememberForever')
         ->once()
-        ->with(Post::$all, Mockery::on(function ($closure) {
+        ->with(Post::ALL, Mockery::on(function ($closure) {
             if (! ($closure instanceof Closure)) {
                 return false;
             }
@@ -48,12 +48,12 @@ test('cache is updated when model is updated', function () {
 
     Cache::shouldReceive('forget')
         ->once()
-        ->with(Post::$all)
+        ->with(Post::ALL)
         ->andReturn(null);
 
     Cache::shouldReceive('rememberForever')
         ->once()
-        ->with(Post::$all, Mockery::on(function ($closure) {
+        ->with(Post::ALL, Mockery::on(function ($closure) {
             if (! ($closure instanceof Closure)) {
                 return false;
             }
@@ -99,12 +99,12 @@ test('cache is updated when model is deleted', function () {
 
     Cache::shouldReceive('forget')
         ->once()
-        ->with(Post::$all)
+        ->with(Post::ALL)
         ->andReturn(null);
 
     Cache::shouldReceive('rememberForever')
         ->once()
-        ->with(Post::$all, Mockery::on(function ($closure) {
+        ->with(Post::ALL, Mockery::on(function ($closure) {
             if (! ($closure instanceof Closure)) {
                 return false;
             }
@@ -143,7 +143,7 @@ test('cache is updated when model is deleted', function () {
 test('cache is updated when forced and not via a model change observer', function () {
     Cache::shouldReceive('rememberForever')
         ->once()
-        ->with(Post::$all, Mockery::on(function ($closure) {
+        ->with(Post::ALL, Mockery::on(function ($closure) {
 
             if (! ($closure instanceof Closure)) {
                 return false;
@@ -173,7 +173,7 @@ test('cache is updated when forced and not via a model change observer', functio
         'updated_at' => now(),
     ]);
 
-    Post::forceFetch(Post::$all);
+    Post::forceFetch(Post::ALL);
 
     //$this->cacheRepositorySpy->shouldHaveReceived('get');
 });
@@ -187,11 +187,11 @@ test('the cache withdraw method always returns a result and saves cache', functi
 
     Cache::flush();
 
-    expect(Cache::get(Post::$all))->toBe(null);
+    expect(Cache::get(Post::ALL))->toBe(null);
 
     Cache::shouldReceive('rememberForever')
         ->once()
-        ->with(Post::$all, Mockery::on(function ($closure) {
+        ->with(Post::ALL, Mockery::on(function ($closure) {
 
             if (! ($closure instanceof Closure)) {
                 return false;
@@ -212,13 +212,13 @@ test('the cache withdraw method always returns a result and saves cache', functi
             return true;
         }));
 
-    Post::withdraw(Post::$all);
+    Post::withdraw(Post::ALL);
 });
 
 it('can save cache with an eloquent relationship', function () {
     Cache::shouldReceive('rememberForever')
         ->once()
-        ->with(Post::$all, Mockery::on(function ($closure) {
+        ->with(Post::ALL, Mockery::on(function ($closure) {
 
             if (! ($closure instanceof Closure)) {
                 return false;
