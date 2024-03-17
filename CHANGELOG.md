@@ -2,6 +2,12 @@
 
 All notable changes to `cache-machine` will be documented in this file.
 
+## v1.1.1 - 2024-03-17
+
+- Fixes tests and workflows
+
+**Full Changelog**: https://github.com/joshembling/cache-machine/compare/v1.1.0...v1.1.1
+
 ## v1.1.0 - 2024-03-17
 
 - Laravel 11 support
