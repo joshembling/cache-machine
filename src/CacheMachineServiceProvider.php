@@ -18,4 +18,9 @@ class CacheMachineServiceProvider extends PackageServiceProvider
             ->name('cache-machine')
             ->hasConfigFile();
     }
+
+    public function boot()
+    {
+        $this->loadMigrationsFrom(__DIR__.'/migrations');
+    }
 }
